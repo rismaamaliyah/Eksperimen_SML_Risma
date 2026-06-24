@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
@@ -41,8 +43,27 @@ def preprocess_data(df):
     return X, y, preprocessor
 
 if __name__ == "__main__":
-    # Example usage
-    df = pd.read_csv('data/adult.csv')  # Load your dataset here
+    df = pd.read_csv("https://raw.githubusercontent.com/rismaamaliyah/Eksperimen_SML_RIsma/refs/heads/main/adult_income_dataset_raw.csv")
     X, y, preprocessor = preprocess_data(df)
-    X.to_csv("adult_income_dataset_preprocessing.csv", index=False)
-    print("Preprocessing complete. Features and target are ready for modeling.")
+    
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    X_train_processed = preprocessor.fit_transform(X_train)
+    X_test_processed = preprocessor.transform(X_test)
+
+    num_features = ['age', 'education_num', 'capital_gain', 'capital_loss', 'hours_per_week']
+    cat_features = ['workclass', 'education', 'marital_status', 'occupation', 'relationship', 'race', 'sex', 'native_country']
+    ohe = preprocessor.named_transformers_['cat']
+    ohe_features = ohe.get_feature_names_out(cat_features)
+    all_features = np.concatenate([num_features, ohe_features])
+
+    X_train_df = pd.DataFrame(X_train_processed.toarray(), columns=all_features)
+    X_test_df = pd.DataFrame(X_test_processed.toarray(), columns=all_features)
+
+    train_preprocessed_df = pd.concat([X_train_df, y_train.reset_index(drop=True)], axis=1)
+    test_preprocessed_df = pd.concat([X_test_df, y_test.reset_index(drop=True)], axis=1)
+
+    train_preprocessed_df.to_csv("preprocessing/adult_income_dataset_preprocessing/adult_income_dataset_preprocessing.csv", index=False)
+    test_preprocessed_df.to_csv("preprocessing/adult_income_dataset_preprocessing/adult_income_dataset_preprocessing_test.csv", index=False)
+    
+    print("Preprocessing completed. Preprocessed datasets saved to 'preprocessing/adult_income_dataset_preprocessing/'.")
