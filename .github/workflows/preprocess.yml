@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pandas scikit-learn matplotlib seaborn
+          pip install pandas scikit-learn matplotlib seaborn numpy
 
       - name: Run preprocessing script
         run: |
