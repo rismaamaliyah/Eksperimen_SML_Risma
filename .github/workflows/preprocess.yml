@@ -28,11 +28,14 @@ jobs:
         run: |
           python preprocessing/automate_Risma.py
 
-      - name: Commit preprocessed datasets
+      - name: Commit preprocessing result
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
           git add preprocessing/adult_income_dataset_preprocessing/adult_income_dataset_preprocessing.csv
           git add preprocessing/adult_income_dataset_preprocessing/adult_income_dataset_preprocessing_test.csv
-          git commit -m "Add preprocessed datasets [skip ci]" || echo "No changes to commit"
+          git commit -m "Add preprocessed datasets"
           git push origin main
+        
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
