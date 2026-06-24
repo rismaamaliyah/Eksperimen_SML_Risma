@@ -43,7 +43,13 @@ def preprocess_data(df):
     return X, y, preprocessor
 
 if __name__ == "__main__":
-    df = pd.read_csv("https://raw.githubusercontent.com/rismaamaliyah/Eksperimen_SML_RIsma/refs/heads/main/adult_income_dataset_raw.csv")
+    columns = [
+        "age", "workclass", "fnlwgt", "education", "education_num",
+        "marital_status", "occupation", "relationship", "race", "sex",
+        "capital_gain", "capital_loss", "hours_per_week", "native_country", "income"]
+    
+    df = pd.read_csv("adult_income_dataset_raw.csv",
+                     header=None, names=columns)
     X, y, preprocessor = preprocess_data(df)
     
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
